@@ -1,0 +1,46 @@
+* {
+  font : 14px;
+  color : white;
+}
+
+Panel, QMessageBox {
+  background : rgb(75, 71, 67);
+}
+
+QLineEdit, QPushButton {
+  background : rgb(55, 51, 47);
+  border : 2px solid gray;
+  border-radius : 5px;
+}
+
+QLineEdit {
+  selection-background-color : darkgray;
+  padding : 0px 8px;
+}
+
+QLineEdit[valid = false] {
+  background : red;
+}
+
+QCheckBox::indicator:checked {
+  image : url(checkbox_checked)
+}
+
+QCheckBox::indicator:unchecked {
+  image : url(checkbox_unchecked)
+}
+
+QComboBox {
+  background : rgb(55, 51, 47);
+  padding : 0px 25px 0px 5px
+}
+
+QComboBox QAbstractItemView {
+  background : rgb(55, 51, 47);
+  border : 2px solid darkgray;
+}
+
+QListWidget {
+  background : rgb(40, 40, 40);
+  background-image : url(bg.jpg)
+}
