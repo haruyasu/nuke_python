@@ -37,7 +37,52 @@ class Panel(QWidget):
             os.makedirs(action_path)
 
     def keyReleaseEvent(self, event):
-        pass
+        if event.isAutoRepeat():
+            return
+        if event.text() == "n":
+            if self.selected_item is None:
+                self.close()
+                return
+            exec self.selected_item.code
+            self.close()
+
+    def paintEvent(self, QPaintEvent):
+        super(Panel, self).paintEvent(QPaintEvent)
+        painter = QPainter(self)
+
+        self.draw_line(painter)
+        self.set_label_color()
+
+        nuke_image = QPixmap("%s/nuke.png" % HOME_FOLDER)
+        painter.drawPixmap(QPoint(self.width()/2-24, self.height()/2-24), nuke_image)
+
+    def set_label_color(self):
+        widgets = [self.layout.itemAt(i).widget() for i in range(self.layout.count())]
+        self.selected_item = None
+        for w in widgets:
+            if self.line.intersected(w.geometry()):
+                w.set_selected(True)
+                self.selected_item = w
+            else:
+                w.set_selected(False)
+
+    def draw_line(self, painter):
+        pen = QPen(QColor(0, 0, 0))
+        pen.setWidth(2)
+        painter.setPen(pen)
+        center = QPoint(self.width() / 2, self.height() / 2)
+        destination = self.mouse_destination
+        self.line = QPolygon([center, center + QPoint(1, 0), destination, destination + QPoint(-1, 0)])
+        painter.drawPolygon(self.line)
+
+    def mouseMoveEvent(self, event):
+        self.mouse_destination = event.pos()
+        self.update()
+
+    def keyPressEvent(self, event):
+        if event.isAutoRepeat():
+            return
+
 
 
 
