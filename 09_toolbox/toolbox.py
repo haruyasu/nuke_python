@@ -82,11 +82,89 @@ class Panel(QWidget):
     def keyPressEvent(self, event):
         if event.isAutoRepeat():
             return
+class Dialog(QDialog):
+    def __init__(self, id):
+        super(Dialog, self).__init__()
 
+        self.id = id
+        self.action_path = os.path.join(HOME_FOLDER, "actions", "%s.txt" % self.id)
+        name_label = QLabel("Name:")
+        self.name_line_edit = QLineEdit()
+        self.code_plain_text = QPlainTextEdit()
 
+        name_layout = QHBoxLayout()
+        name_layout.addWidget(name_label)
+        name_layout.addWidget(self.name_line_edit)
 
+        master_layout = QVBoxLayout()
+        master_layout.addWidget(name_layout)
+        master_layout.addWidget(self.code_plain_text)
 
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal, self)
+        master_layout.addWidget(buttons)
 
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+
+        self.setLayout(master_layout)
+        self.load_action()
+
+    def load_action(self):
+        if os.path.exists(self.action_path):
+            doc = json.load(open(self.action_path))
+            name = doc["name"]
+            code = doc["code"]
+            self.name_line_edit.setText(name)
+            self.code_plain_text.setPlainText(code)
+
+    def save_action(self):
+        doc = dict()
+        doc["name"] = self.name_line_edit.text()
+        doc["code"] = self.code_plain_text.toPlainText()
+        path = open(self.action_path, "w")
+        json.dump(doc, path)
+
+class ActionLabel(QLabel):
+    def __init__(self, id):
+        super(ActionLabel, self).__init__()
+
+        self.id = id
+        self.setAlignment(Qt.AlignCenter)
+        self.setMouseTracking(True)
+        self.setFixedWidth(100)
+        self.setFixedHeight(25)
+        self.setStyleSheet("""background:red;
+                            color:black""")
+        self.set_action()
+
+    def set_action(self):
+        path = os.path.join(HOME_FOLDER, "actions", "%s.txt" % self.id)
+        print path
+        if os.path.exists(path):
+            doc = json.load(open(path))
+            name = doc["name"]
+            code = doc["code"]
+        else:
+            name = "Action %s" % self.id
+            code = ""
+
+        self.setText(name)
+        self.code = code
+
+    def mousePressEvent(self, event):
+        if event.buttons() == Qt.RightButton:
+            dialog = Dialog(self.id)
+            if dialog.exec_():
+                dialog.save_action()
+            self.parent().close()
+
+    def set_selected(self, is_selected):
+        if is_selected:
+            self.setStyleSheet("""background:green;
+                                    color:black""")
+        else:
+            self.setStyleSheet("""background:red;
+                                    color:black""")
 
 app = QApplication(sys.argv)
 panel = Panel()
