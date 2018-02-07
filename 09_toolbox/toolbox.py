@@ -1,10 +1,16 @@
-from PySide.QtGui import *
-from PySide.QtCore import *
 import os
 import json
 import sys
+try:
+    from PySide.QtGui import *
+    from PySide.QtCore import *
+except:
+    from PySide2.QtGui import *
+    from PySide2.QtCore import *
+    from PySide2.QtWidgets import *
 
-HOME_FOLDER = os.path.join(os.path.expanduser("~"), ".nuke")
+# HOME_FOLDER = os.path.join(os.path.expanduser("~"), ".nuke")
+HOME_FOLDER = "F:/nuke_python/09_toolbox"
 
 class Panel(QWidget):
     def __init__(self):
@@ -86,6 +92,7 @@ class Dialog(QDialog):
     def __init__(self, id):
         super(Dialog, self).__init__()
 
+        self.resize(400, 400)
         self.id = id
         self.action_path = os.path.join(HOME_FOLDER, "actions", "%s.txt" % self.id)
         name_label = QLabel("Name:")
@@ -97,7 +104,7 @@ class Dialog(QDialog):
         name_layout.addWidget(self.name_line_edit)
 
         master_layout = QVBoxLayout()
-        master_layout.addWidget(name_layout)
+        master_layout.addLayout(name_layout)
         master_layout.addWidget(self.code_plain_text)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal, self)
@@ -139,7 +146,6 @@ class ActionLabel(QLabel):
 
     def set_action(self):
         path = os.path.join(HOME_FOLDER, "actions", "%s.txt" % self.id)
-        print path
         if os.path.exists(path):
             doc = json.load(open(path))
             name = doc["name"]
@@ -166,7 +172,6 @@ class ActionLabel(QLabel):
             self.setStyleSheet("""background:red;
                                     color:black""")
 
-app = QApplication(sys.argv)
-panel = Panel()
-panel.show()
-app.exec_()
+def start():
+    start.panel = Panel()
+    start.panel.show()

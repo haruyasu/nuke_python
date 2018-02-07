@@ -1,0 +1,1 @@
+{"code": "import nuke\nimport clipboardCore\n\nclipboardCore.start()", "name": "clipboard"}

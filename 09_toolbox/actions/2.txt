@@ -1,0 +1,1 @@
+{"code": "import nuke, sys\n\nb = nuke.createNode(\"Blur\", inpanel=False)\nb.setXYpos(event.pos().x(), event.pos().y())\n\n", "name": "dialogtest"}
